@@ -1,0 +1,9 @@
+[package]
+name = "sigmaos_anonymity_gateway"
+version = "0.1.0"
+edition = "2021"
+description = "Dedicated network-only anonymity gateway managing virtual switches and Tor daemon interfaces"
+
+[lib]
+name = "sigmaos_anonymity_gateway"
+path = "src/lib.rs"

@@ -1,0 +1,16 @@
+[component]
+name = "SigmaOS-anonymity-gateway"
+tier = 1
+stability = "scaffold"
+language = "rust"
+description = "Dedicated network-only anonymity gateway managing virtual switches and Tor daemon interfaces"
+upstream = ["https://github.com/Whonix/whonix-gateway-firewall"]
+
+[contract]
+provides = ["gateway-switch", "tor-interfaces", "virtual-bridge"]
+depends_on = []
+
+[maturity]
+status = "Scaffold"
+test_evidence = "Compiles and passes AAA unit tests"
+next_milestone = "Hardware and runtime integration"
