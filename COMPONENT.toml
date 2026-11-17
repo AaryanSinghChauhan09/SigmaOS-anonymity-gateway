@@ -3,7 +3,7 @@ name = "SigmaOS-anonymity-gateway"
 tier = 1
 stability = "scaffold"
 language = "rust"
-description = "Dedicated network-only anonymity gateway managing virtual switches and Tor daemon interfaces"
+description = "No GitHub description is set; component scope remains unclassified."
 upstream = ["https://github.com/Whonix/whonix-gateway-firewall"]
 
 [contract]
