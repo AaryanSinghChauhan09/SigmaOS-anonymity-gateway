@@ -1,9 +1,15 @@
 [package]
-name = "sigmaos_anonymity_gateway"
+name = "SigmaOS-anonymity-gateway"
 version = "0.1.0"
 edition = "2021"
-description = "Dedicated network-only anonymity gateway managing virtual switches and Tor daemon interfaces"
+license = "Apache-2.0"
+description = "SigmaOS sigmaos_anonymity_gateway component"
 
 [lib]
 name = "sigmaos_anonymity_gateway"
 path = "src/lib.rs"
+
+[dependencies]
+thiserror = "1"
+
+[dev-dependencies]

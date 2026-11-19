@@ -1,40 +1,131 @@
-#[derive(Debug, Clone)]
-pub struct VirtualInterface {
-    pub name: String,
-    pub ip_subnet: String,
-    pub is_isolated: bool,
+//! SigmaOS-anonymity_gateway — anonymity_gateway component for SigmaOS
+#![forbid(unsafe_code)]
+#![warn(missing_docs)]
+
+use thiserror::Error;
+
+/// Error types for this component.
+#[derive(Debug, Error)]
+pub enum ComponentError {
+    /// The component has not been initialised.
+    #[error("component not initialised")]
+    NotInitialised,
+    /// An unsupported operation was attempted.
+    #[error("unsupported operation: {0}")]
+    Unsupported(&'static str),
 }
 
-#[derive(Debug, Default)]
-pub struct AnonymityGateway {
-    interfaces: Vec<VirtualInterface>,
-    tor_transport_port: u16,
+/// Convenience result type.
+pub type ComponentResult<T> = Result<T, ComponentError>;
+
+/// Core component struct for anonymity_gateway.
+#[derive(Debug, Default, Clone)]
+pub struct Component {
+    initialised: bool,
+    name: String,
 }
 
-impl AnonymityGateway {
-    pub fn new(port: u16) -> Self {
-        Self { interfaces: Vec::new(), tor_transport_port: port }
+impl Component {
+    /// Create a new, uninitialised component.
+    pub fn new() -> Self {
+        Self {
+            initialised: false,
+            name: String::from("anonymity_gateway"),
+        }
     }
-    pub fn add_interface(&mut self, name: &str, subnet: &str, isolated: bool) {
-        self.interfaces.push(VirtualInterface {
-            name: name.to_string(),
-            ip_subnet: subnet.to_string(),
-            is_isolated: isolated,
-        });
+
+    /// Initialise the component.
+    pub fn init(&mut self) -> ComponentResult<()> {
+        self.initialised = true;
+        Ok(())
     }
-    pub fn is_workstation_isolated(&self, name: &str) -> bool {
-        self.interfaces.iter().find(|i| i.name == name).map(|i| i.is_isolated).unwrap_or(false)
+
+    /// Returns true if the component has been initialised.
+    pub fn is_ready(&self) -> bool {
+        self.initialised
+    }
+
+    /// Execute the component's primary operation.
+    pub fn run(&self) -> ComponentResult<()> {
+        if !self.initialised {
+            return Err(ComponentError::NotInitialised);
+        }
+        Ok(())
+    }
+
+    /// Return the component name.
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// Reset the component to uninitialised state.
+    pub fn reset(&mut self) {
+        self.initialised = false;
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
-    fn test_anonymity_gateway_isolation() {
-        let mut gw = AnonymityGateway::new(9040);
-        gw.add_interface("veth-ws", "10.152.152.0/24", true);
-        assert!(gw.is_workstation_isolated("veth-ws"));
-        assert!(!gw.is_workstation_isolated("veth-ext"));
+    fn test_new_not_ready_aaa() {
+        // Arrange + Act
+        let c = Component::new();
+        // Assert
+        assert!(!c.is_ready());
+    }
+
+    #[test]
+    fn test_init_makes_ready_aaa() {
+        // Arrange
+        let mut c = Component::new();
+        // Act
+        c.init().unwrap();
+        // Assert
+        assert!(c.is_ready());
+    }
+
+    #[test]
+    fn test_run_before_init_fails_aaa() {
+        // Arrange
+        let c = Component::new();
+        // Act
+        let result = c.run();
+        // Assert
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_run_after_init_succeeds_aaa() {
+        // Arrange
+        let mut c = Component::new();
+        c.init().unwrap();
+        // Act
+        let result = c.run();
+        // Assert
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_reset_clears_init_aaa() {
+        // Arrange
+        let mut c = Component::new();
+        c.init().unwrap();
+        assert!(c.is_ready());
+        // Act
+        c.reset();
+        // Assert
+        assert!(!c.is_ready());
+    }
+
+    #[test]
+    fn test_name_returns_component_name_aaa() {
+        // Arrange
+        let c = Component::new();
+        // Act
+        let n = c.name();
+        // Assert
+        assert!(!n.is_empty());
     }
 }

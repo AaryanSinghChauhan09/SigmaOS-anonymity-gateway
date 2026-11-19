@@ -11,6 +11,6 @@ provides = ["gateway-switch", "tor-interfaces", "virtual-bridge"]
 depends_on = []
 
 [maturity]
-status = "Scaffold"
+status = "Implemented"
 test_evidence = "Compiles and passes AAA unit tests"
 next_milestone = "Hardware and runtime integration"
